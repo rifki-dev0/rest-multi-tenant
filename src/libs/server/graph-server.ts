@@ -8,9 +8,12 @@ import cors from "cors";
 import typeDefs from "@/graph/types";
 import { invoiceQueryResolver } from "@/graph/resolver/invoice";
 import { UserMutationResolver } from "@/graph/resolver/user";
+import { compileModel, TenantedModel } from "@/tenanted/model";
+import { Tenant } from "@/non-tenanted/model/tenant";
 
 interface MyContext {
-  token?: string;
+  tenantId?: string;
+  compiledModel?: TenantedModel;
 }
 
 const httpServer = http.createServer(app);
@@ -23,8 +26,14 @@ const apolloServer = new ApolloServer<MyContext>({
       ...invoiceQueryResolver,
     },
     Mutation: {
-      sampleMutation: (_: Record<string, any>, { num }: { num: number }) =>
-        num + 1,
+      sampleMutation: (
+        _: Record<string, any>,
+        { num }: { num: number },
+        context: MyContext,
+      ) => {
+        console.log("tenant id in mutation", context.tenantId);
+        return num + 1;
+      },
       ...UserMutationResolver,
     },
   },
@@ -38,7 +47,22 @@ const apolloServer = new ApolloServer<MyContext>({
     "/graphql",
     cors<cors.CorsRequest>(),
     express.json(),
-    expressMiddleware(apolloServer),
+    expressMiddleware(apolloServer, {
+      context: async ({ req }) => {
+        console.log(req.header("x-tenant-id"));
+        const tenantId = req.header("x-tenant-id");
+        if (typeof tenantId === "string") {
+          const tenant = await Tenant.findByPk(tenantId);
+          if (tenant) {
+            return {
+              tenantId,
+              compiledModel: await compileModel(tenant.uuid),
+            };
+          }
+        }
+        return {};
+      },
+    }),
   );
 })();
 
