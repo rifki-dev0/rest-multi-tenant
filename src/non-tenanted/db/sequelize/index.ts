@@ -1,12 +1,14 @@
 import { Sequelize } from "sequelize";
 import config from "@/config";
 
-const sequelize = new Sequelize(config.db.mainDBUrl, {
-  dialect: "postgres",
-  database: "neondb",
-  username: config.db.mainDBUser,
-  password: config.db.mainDBPassword,
-});
+const sequelize = new Sequelize(
+  `${config.db.dbHost}/${config.db.mainDBName}${config.db.dbOption}`,
+  {
+    dialect: "postgres",
+    username: config.db.mainDBUser,
+    password: config.db.mainDBPassword,
+  },
+);
 
 sequelize
   .authenticate()
