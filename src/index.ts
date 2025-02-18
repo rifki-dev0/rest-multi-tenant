@@ -4,4 +4,6 @@ import config from "@/config";
 
 httpServer.listen({ port: config.server.port });
 console.log(`Server is running on http://localhost:${config.server.port}`);
-export default httpServer;
+export default (req: any, res: any) => {
+  httpServer.emit("request", req, res);
+};
