@@ -1,7 +1,7 @@
 import { TenantModel, UserModel } from "@/non-tenanted/model";
 import { IUser } from "@/non-tenanted/model/user";
-import neonTech from "../../../.api/apis/neon-tech";
 import config from "@/config";
+import neonClient from "@/libs/db/neon-client";
 
 export async function createUser(data: Omit<IUser, "id" | "tenants_id">) {
   const user = await UserModel.create(data);
@@ -10,11 +10,21 @@ export async function createUser(data: Omit<IUser, "id" | "tenants_id">) {
   user.tenants_id = [tenant.uuid];
   //TRIGGER CREATE DATABASE WITH UUID
   try {
-    await neonTech.auth(config.db.neonAPIKey).createProjectBranchDatabase(
-      { database: { name: tenant.uuid, owner_name: user.name } },
+    // await neonTech.auth(config.db.neonAPIKey).createProjectBranchDatabase(
+    //   { database: { name: tenant.uuid, owner_name: user.name } },
+    //   {
+    //     branch_id: config.db.neonBranchId,
+    //     project_id: config.db.neonProjectId,
+    //   },
+    // );
+    await neonClient.createProjectBranchDatabase(
+      config.db.neonProjectId,
+      config.db.neonBranchId,
       {
-        branch_id: config.db.neonBranchId,
-        project_id: config.db.neonProjectId,
+        database: {
+          name: tenant.uuid,
+          owner_name: user.name,
+        },
       },
     );
   } catch (err) {
