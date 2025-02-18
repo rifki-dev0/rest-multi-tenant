@@ -1,4 +1,4 @@
-// Import the 'express' module
+import "tsconfig-paths/register";
 import { app, httpServer } from "@/libs/server/graph-server";
 import config from "@/config";
 
