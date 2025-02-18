@@ -45,7 +45,7 @@ export async function createInvoice(
       total_amount: line.amount * line.quantity,
     });
     await invoiceLine.save();
-    invoice.lines_id.push(invoiceLine.id);
+    invoice.lines_id = [...invoice.lines_id, invoiceLine.id];
   }
   await invoice.save();
   return invoice.toJSON();

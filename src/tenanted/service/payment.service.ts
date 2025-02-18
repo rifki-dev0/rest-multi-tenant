@@ -41,7 +41,7 @@ export async function createPayment(
       }
       await invoice.save();
     }
-    payment.lines_id.push(paymentLine.id);
+    payment.lines_id = [...payment.lines_id, paymentLine.id];
   }
   await payment.save();
   return payment;
