@@ -6,6 +6,7 @@ export interface IUser {
   name: string;
   email: string;
   password: string;
+  userClerkId: string;
   tenants_id: string[];
 }
 
@@ -16,6 +17,7 @@ class User extends Model<IUser, UserCreationAttributes> {
   declare name: string;
   declare email: string;
   declare password: string;
+  declare userClerkId: string;
   declare tenants_id: string[];
 
   hasTenants() {
@@ -45,6 +47,11 @@ User.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    userClerkId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: "",
+    },
     tenants_id: {
       type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: false,
@@ -59,6 +66,6 @@ User.init(
   },
 );
 
-User.sync();
+User.sync({ alter: true });
 
 export { User };

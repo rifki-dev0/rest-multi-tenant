@@ -9,6 +9,7 @@ import typeDefs from "@/graph/types";
 import { compileModel, TenantedModel } from "@/tenanted/model";
 import { Tenant } from "@/non-tenanted/model/tenant";
 import resolvers from "../../graph/resolvers";
+import { User } from "@/non-tenanted/model/user";
 
 export interface GraphContext {
   tenantId?: string;
@@ -33,14 +34,22 @@ const apolloServer = new ApolloServer<GraphContext>({
     express.json(),
     expressMiddleware(apolloServer, {
       context: async ({ req }) => {
-        const tenantId = req.header("x-tenant-id");
-        if (typeof tenantId === "string") {
-          const tenant = await Tenant.findByPk(tenantId);
-          if (tenant) {
-            return {
-              tenantId,
-              compiledModel: await compileModel(tenant.uuid),
-            };
+        const userId = req.header("x-user-id");
+        if (typeof userId === "string") {
+          const user = await User.findOne({
+            where: {
+              userClerkId: userId,
+            },
+          });
+          if (user && user.tenants_id[0]) {
+            const tenant = await Tenant.findByPk(user.tenants_id[0]);
+            console.log(tenant);
+            if (tenant) {
+              return {
+                tenantId: tenant.id,
+                compiledModel: await compileModel(tenant.uuid),
+              };
+            }
           }
         }
         return {};
