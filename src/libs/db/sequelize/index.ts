@@ -18,7 +18,6 @@ export function getSequelizeConnection(data: {
       dialect: "postgres",
       username: data.dbUser,
       password: data.dbPassword,
-      logging: false,
     },
   );
   sequelize

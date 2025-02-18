@@ -1,5 +1,15 @@
 const InvoiceGraphTypes = `
     #graphql
+    type InvoiceLine {
+        id: String!
+        invoice_id: String!
+        product_number: String!
+        product_name: String!
+        amount: Float!
+        quantity: Int!
+        total_amount: Float!
+    }
+
     type Invoice {
         id: String!,
         number: String!
@@ -9,8 +19,9 @@ const InvoiceGraphTypes = `
         balance: Float!
         status: String!
         lines_id: [String!]
+        lines: [InvoiceLine!]
     }
-    
+
     input InputInvoiceLine {
         product_number: String!
         product_name: String!
@@ -28,6 +39,10 @@ const InvoiceGraphTypes = `
 
     extend type Mutation {
         createInvoice(payload: InputInvoiceType): Invoice
+    }
+
+    extend type Query {
+        getInvoices: [Invoice!]
     }
 `;
 

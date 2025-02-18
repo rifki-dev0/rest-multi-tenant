@@ -1,5 +1,5 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import sequelize from "@/non-tenanted/db/sequelize";
+import sequelize from "@/libs/db/sequelize";
 
 export interface IUser {
   id: string;

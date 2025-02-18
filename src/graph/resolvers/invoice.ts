@@ -2,9 +2,20 @@ import { GraphContext } from "@/libs/server/graph-server";
 import {
   createInvoice,
   createInvoiceValidation,
+  getInvoice,
+  getLinesByInvoiceId,
 } from "@/tenanted/service/invoice.service";
+import { IInvoice } from "@/tenanted/model/invoice";
 
-const invoiceQueryResolver = {};
+const invoiceQueryResolver = {
+  getInvoices: async (
+    _: Record<string, any>,
+    _1: any,
+    context: GraphContext,
+  ) => {
+    return await getInvoice(context.compiledModel!);
+  },
+};
 
 const invoiceMutationResolver = {
   createInvoice: async (
@@ -20,4 +31,20 @@ const invoiceMutationResolver = {
   },
 };
 
-export { invoiceQueryResolver, invoiceMutationResolver };
+const invoiceSubQueryResolver = {
+  Invoice: {
+    lines: async (
+      { id }: IInvoice,
+      _: Record<string, any>,
+      context: GraphContext,
+    ) => {
+      return await getLinesByInvoiceId(context.compiledModel!, id);
+    },
+  },
+};
+
+export {
+  invoiceQueryResolver,
+  invoiceMutationResolver,
+  invoiceSubQueryResolver,
+};

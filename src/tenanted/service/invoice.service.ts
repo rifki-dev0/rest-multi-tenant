@@ -50,3 +50,18 @@ export async function createInvoice(
   await invoice.save();
   return invoice.toJSON();
 }
+
+export async function getInvoice(db: TenantedModel) {
+  return await db.invoice.findAll();
+}
+
+export async function getLinesByInvoiceId(
+  db: TenantedModel,
+  invoiceId: string,
+) {
+  return await db.invoiceLine.findAll({
+    where: {
+      invoice_id: invoiceId,
+    },
+  });
+}
