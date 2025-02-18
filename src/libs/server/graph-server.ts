@@ -6,38 +6,22 @@ import express from "express";
 import { expressMiddleware } from "@apollo/server/express4";
 import cors from "cors";
 import typeDefs from "@/graph/types";
-import { invoiceQueryResolver } from "@/graph/resolver/invoice";
-import { UserMutationResolver } from "@/graph/resolver/user";
 import { compileModel, TenantedModel } from "@/tenanted/model";
 import { Tenant } from "@/non-tenanted/model/tenant";
+import resolvers from "../../graph/resolvers";
 
-interface MyContext {
+export interface GraphContext {
   tenantId?: string;
   compiledModel?: TenantedModel;
 }
 
 const httpServer = http.createServer(app);
 
-const apolloServer = new ApolloServer<MyContext>({
+const apolloServer = new ApolloServer<GraphContext>({
   typeDefs,
-  resolvers: {
-    Query: {
-      sayHello: () => "Hello World",
-      ...invoiceQueryResolver,
-    },
-    Mutation: {
-      sampleMutation: (
-        _: Record<string, any>,
-        { num }: { num: number },
-        context: MyContext,
-      ) => {
-        console.log("tenant id in mutation", context.tenantId);
-        return num + 1;
-      },
-      ...UserMutationResolver,
-    },
-  },
+  resolvers: resolvers,
   plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+  introspection: true,
 });
 
 (async () => {
@@ -49,7 +33,6 @@ const apolloServer = new ApolloServer<MyContext>({
     express.json(),
     expressMiddleware(apolloServer, {
       context: async ({ req }) => {
-        console.log(req.header("x-tenant-id"));
         const tenantId = req.header("x-tenant-id");
         if (typeof tenantId === "string") {
           const tenant = await Tenant.findByPk(tenantId);

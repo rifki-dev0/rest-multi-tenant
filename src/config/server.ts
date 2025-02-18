@@ -8,8 +8,8 @@ export interface ServerConfig {
 }
 
 const serverConfig: ServerConfig = {
-  port: "3001",
-  host: "localhost",
+  port: process.env["SERVER_PORT"] || "3001",
+  host: process.env["SERVER_HOST"] || "localhost",
 };
 
 export default serverConfig;

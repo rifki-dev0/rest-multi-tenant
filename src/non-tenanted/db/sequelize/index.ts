@@ -18,6 +18,7 @@ export function getSequelizeConnection(data: {
       dialect: "postgres",
       username: data.dbUser,
       password: data.dbPassword,
+      logging: false,
     },
   );
   sequelize
@@ -40,6 +41,7 @@ const sequelize = new Sequelize(
     dialect: "postgres",
     username: config.db.mainDBUser,
     password: config.db.mainDBPassword,
+    logging: false,
   },
 );
 
