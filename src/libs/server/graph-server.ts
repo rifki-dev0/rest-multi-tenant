@@ -49,4 +49,4 @@ const apolloServer = new ApolloServer<GraphContext>({
   );
 })();
 
-export { httpServer };
+export { httpServer, app };
