@@ -43,6 +43,7 @@ const InvoiceGraphTypes = `
 
     extend type Query {
         getInvoices: [Invoice!]
+        getOutstandingInvoices: [Invoice!]
     }
 `;
 

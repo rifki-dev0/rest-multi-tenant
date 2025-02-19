@@ -25,14 +25,16 @@ export async function createPayment(
   });
   await payment.save();
   for (const line of payload.lines) {
-    const paymentLine = await db.paymentLine.create({
-      invoice_id: line.invoice_id,
-      payment_id: payment.id,
-      amount: line.amount,
-    });
-    await paymentLine.save();
     const invoice = await db.invoice.findByPk(line.invoice_id);
     if (invoice) {
+      const paymentLine = await db.paymentLine.create({
+        invoice_id: invoice.id,
+        payment_id: payment.id,
+        amount: line.amount,
+      });
+      await paymentLine.save();
+
+      payment.lines_id = [...payment.lines_id, paymentLine.id];
       invoice.balance -= line.amount;
       if (invoice.balance > 0) {
         invoice.status = "PAID PARTIAL";
@@ -41,7 +43,6 @@ export async function createPayment(
       }
       await invoice.save();
     }
-    payment.lines_id = [...payment.lines_id, paymentLine.id];
   }
   await payment.save();
   return payment;

@@ -6,6 +6,7 @@ import {
   getLinesByInvoiceId,
 } from "@/tenanted/service/invoice.service";
 import { IInvoice } from "@/tenanted/model/invoice";
+import { Op } from "sequelize";
 
 const invoiceQueryResolver = {
   getInvoices: async (
@@ -14,6 +15,19 @@ const invoiceQueryResolver = {
     context: GraphContext,
   ) => {
     return await getInvoice(context.compiledModel!);
+  },
+  getOutstandingInvoices: async (
+    _: Record<string, any>,
+    _1: any,
+    context: GraphContext,
+  ) => {
+    return await getInvoice(context.compiledModel!, {
+      where: {
+        status: {
+          [Op.in]: ["PAID PARTIAL", "NOT PAID"],
+        },
+      },
+    });
   },
 };
 

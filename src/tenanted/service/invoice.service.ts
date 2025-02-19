@@ -1,5 +1,7 @@
 import { z } from "zod";
 import { TenantedModel } from "@/tenanted/model";
+import { FindOptions } from "sequelize";
+import { IInvoice } from "@/tenanted/model/invoice";
 
 export const createInvoiceValidation = z.object({
   number: z.string(),
@@ -51,8 +53,11 @@ export async function createInvoice(
   return invoice.toJSON();
 }
 
-export async function getInvoice(db: TenantedModel) {
-  return await db.invoice.findAll();
+export async function getInvoice(
+  db: TenantedModel,
+  filter?: FindOptions<IInvoice>,
+) {
+  return await db.invoice.findAll(filter);
 }
 
 export async function getLinesByInvoiceId(
