@@ -1,23 +1,26 @@
 import {
-  defineInvoice,
-  defineInvoiceLine,
+  initInvoiceLineModel,
+  initInvoiceModel,
   Invoice,
   InvoiceLine,
 } from "@/tenanted/model/invoice";
 import { getSequelizeConnection } from "@/libs/db/sequelize";
 import config from "@/config";
 import {
-  definePayment,
-  definePaymentLine,
+  initPaymentLineModel,
+  initPaymentModel,
   Payment,
   PaymentLine,
 } from "@/tenanted/model/payment";
+import { Sequelize } from "sequelize";
 
 export type TenantedModel = {
   invoice: typeof Invoice;
   invoiceLine: typeof InvoiceLine;
   payment: typeof Payment;
   paymentLine: typeof PaymentLine;
+
+  _sequelizeConnection: Sequelize;
 };
 
 export async function compileModel(dbName: string) {
@@ -28,10 +31,10 @@ export async function compileModel(dbName: string) {
   });
   try {
     //DEFINE / INIT MODEL
-    const invoice = defineInvoice(sequelize);
-    const invoiceLine = defineInvoiceLine(sequelize);
-    const payment = definePayment(sequelize);
-    const paymentLine = definePaymentLine(sequelize);
+    const invoice = initInvoiceModel(sequelize);
+    const invoiceLine = initInvoiceLineModel(sequelize);
+    const payment = initPaymentModel(sequelize);
+    const paymentLine = initPaymentLineModel(sequelize);
 
     //SYNC MODEL TO DATABASE
     await invoice.sync();
@@ -52,6 +55,7 @@ export async function compileModel(dbName: string) {
       invoiceLine: invoiceLine,
       payment,
       paymentLine,
+      _sequelizeConnection: sequelize,
     };
 
     return tenantedModel;

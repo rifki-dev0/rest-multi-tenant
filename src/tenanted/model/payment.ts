@@ -37,7 +37,7 @@ export class PaymentLine extends Model<
   declare amount: number;
 }
 
-export function definePayment(sequelize: Sequelize) {
+export function initPaymentModel(sequelize: Sequelize) {
   Payment.init(
     {
       id: {
@@ -74,7 +74,7 @@ export function definePayment(sequelize: Sequelize) {
   return Payment;
 }
 
-export function definePaymentLine(sequelize: Sequelize) {
+export function initPaymentLineModel(sequelize: Sequelize) {
   PaymentLine.init(
     {
       id: {

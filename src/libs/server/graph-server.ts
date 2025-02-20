@@ -6,10 +6,11 @@ import express from "express";
 import { expressMiddleware } from "@apollo/server/express4";
 import cors from "cors";
 import typeDefs from "@/graph/types";
-import { compileModel, TenantedModel } from "@/tenanted/model";
+import { TenantedModel } from "@/tenanted/model";
 import { Tenant } from "@/non-tenanted/model/tenant";
 import resolvers from "../../graph/resolvers";
 import { User } from "@/non-tenanted/model/user";
+import { TenantConnectionCaching } from "@/libs/cache/tenant-connection-caching";
 
 export interface GraphContext {
   tenantId?: string;
@@ -33,7 +34,7 @@ const apolloServer = new ApolloServer<GraphContext>({
     cors<cors.CorsRequest>(),
     express.json(),
     expressMiddleware(apolloServer, {
-      context: async ({ req }) => {
+      context: async ({ req }): Promise<GraphContext> => {
         const userId = req.header("x-user-id");
         if (typeof userId === "string") {
           const user = await User.findOne({
@@ -43,11 +44,12 @@ const apolloServer = new ApolloServer<GraphContext>({
           });
           if (user && user.tenants_id[0]) {
             const tenant = await Tenant.findByPk(user.tenants_id[0]);
-            console.log(tenant);
             if (tenant) {
               return {
                 tenantId: tenant.id,
-                compiledModel: await compileModel(tenant.uuid),
+                compiledModel: await TenantConnectionCaching.getConnection(
+                  tenant.uuid,
+                ),
               };
             }
           }

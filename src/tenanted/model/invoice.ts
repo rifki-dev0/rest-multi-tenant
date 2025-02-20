@@ -52,7 +52,7 @@ export class InvoiceLine extends Model<
   declare total_amount: number;
 }
 
-export function defineInvoice(sequelize: Sequelize) {
+export function initInvoiceModel(sequelize: Sequelize) {
   Invoice.init(
     {
       id: {
@@ -99,7 +99,7 @@ export function defineInvoice(sequelize: Sequelize) {
   return Invoice;
 }
 
-export function defineInvoiceLine(sequelize: Sequelize) {
+export function initInvoiceLineModel(sequelize: Sequelize) {
   InvoiceLine.init(
     {
       id: {
