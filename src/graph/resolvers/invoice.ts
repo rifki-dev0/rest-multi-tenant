@@ -1,12 +1,12 @@
 import { GraphContext } from "@/libs/server/graph-server";
 import {
   createInvoice,
-  createInvoiceValidation,
   getInvoice,
   getLinesByInvoiceId,
 } from "@/tenanted/service/invoice.service";
 import { IInvoice } from "@/tenanted/model/invoice";
 import { Op } from "sequelize";
+import { createInvoiceValidation } from "@/tenanted/validation/invoice.validation";
 
 const invoiceQueryResolver = {
   getInvoices: async (

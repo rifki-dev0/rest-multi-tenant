@@ -1,17 +1,6 @@
 import { z } from "zod";
 import { TenantedModel } from "@/tenanted/model";
-
-export const createPaymentValidation = z.object({
-  number: z.string(),
-  date: z.string(),
-  total_amount: z.number(),
-  lines: z.array(
-    z.object({
-      invoice_id: z.string(),
-      amount: z.number().min(0),
-    }),
-  ),
-});
+import { createPaymentValidation } from "@/tenanted/validation/payment.validation";
 
 export async function createPayment(
   db: TenantedModel,

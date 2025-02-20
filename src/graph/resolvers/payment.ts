@@ -1,10 +1,10 @@
 import { GraphContext } from "@/libs/server/graph-server";
 import {
   createPayment,
-  createPaymentValidation,
   getLinesByPaymentId,
   getPayment,
 } from "@/tenanted/service/payment.service";
+import { createPaymentValidation } from "@/tenanted/validation/payment.validation";
 
 const paymentQueryResolver = {
   getPayments: async (
