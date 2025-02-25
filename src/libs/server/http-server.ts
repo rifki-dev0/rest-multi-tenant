@@ -4,12 +4,17 @@ import webhook from "@/rest/webhooks";
 import { mainRouter } from "@/rest/routes";
 import cors from "cors";
 import helmet from "helmet";
+import hpp from "hpp";
+import ExpressMongoSanitize from "express-mongo-sanitize";
 
 const app = express();
 
 app.use(cors());
 app.use(helmet());
 app.use(express.json());
+
+app.use(hpp());
+app.use(ExpressMongoSanitize());
 //add sanitation, interceptor etc.
 
 // Define a route for the root path ('/')
