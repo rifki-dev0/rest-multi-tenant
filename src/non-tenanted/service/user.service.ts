@@ -17,6 +17,8 @@ export async function createUser(data: Omit<IUser, "id" | "tenants_id">) {
     await clerkClient.users.updateUserMetadata(data.userClerkId, {
       privateMetadata: {
         tenant_id: tenant.id,
+        tenant_name: tenant.name,
+        icon: "",
       },
     });
     user.tenants_id = [tenant.id];
