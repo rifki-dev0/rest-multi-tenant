@@ -11,6 +11,8 @@ export interface DBConfig {
   neonAPIKey: string;
   neonProjectId: string;
   neonBranchId: string;
+
+  mongoHost: string;
 }
 
 const dbConfig: DBConfig = {
@@ -22,6 +24,7 @@ const dbConfig: DBConfig = {
   neonAPIKey: process.env["NEON_API_KEY"] || "",
   neonProjectId: process.env["NEON_PROJECT_ID"] || "",
   neonBranchId: process.env["NEON_BRANCH_ID"] || "",
+  mongoHost: process.env["MONGO_URL"] || "",
 };
 
 export default dbConfig;

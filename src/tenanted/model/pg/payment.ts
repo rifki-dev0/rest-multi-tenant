@@ -1,5 +1,5 @@
 import { DataTypes, Model, Optional, Sequelize } from "sequelize";
-import { Invoice } from "@/tenanted/model/invoice";
+import { Invoice } from "@/tenanted/model/pg/invoice";
 
 export interface IPaymentLine {
   id: string;

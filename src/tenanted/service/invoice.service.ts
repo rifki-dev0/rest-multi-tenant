@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { TenantedModel } from "@/tenanted/model";
 import { FindOptions } from "sequelize";
-import { IInvoice } from "@/tenanted/model/invoice";
+import { IInvoice } from "@/tenanted/model/pg/invoice";
 import { createInvoiceValidation } from "@/tenanted/validation/invoice.validation";
 
 export async function createInvoice(

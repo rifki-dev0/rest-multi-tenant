@@ -3,7 +3,7 @@ import {
   initInvoiceModel,
   Invoice,
   InvoiceLine,
-} from "@/tenanted/model/invoice";
+} from "@/tenanted/model/pg/invoice";
 import { getSequelizeConnection } from "@/libs/db/sequelize";
 import config from "@/config";
 import {
@@ -11,16 +11,18 @@ import {
   initPaymentModel,
   Payment,
   PaymentLine,
-} from "@/tenanted/model/payment";
+} from "@/tenanted/model/pg/payment";
 import { Sequelize } from "sequelize";
+import { getMongoConnection } from "@/libs/db/mongo";
+import { Connection } from "mongoose";
 
 export type TenantedModel = {
   invoice: typeof Invoice;
   invoiceLine: typeof InvoiceLine;
   payment: typeof Payment;
   paymentLine: typeof PaymentLine;
-
   _sequelizeConnection: Sequelize;
+  _mongoConnection: Connection;
 };
 
 export async function compileModel(dbName: string) {
@@ -29,6 +31,7 @@ export async function compileModel(dbName: string) {
     dbPassword: config.db.mainDBPassword,
     dbUser: config.db.mainDBUser,
   });
+  const mongo = getMongoConnection(dbName);
   try {
     //DEFINE / INIT MODEL
     const invoice = initInvoiceModel(sequelize);
@@ -50,12 +53,15 @@ export async function compileModel(dbName: string) {
       foreignKey: "payment_id",
     });
 
+    //MONGO MODEL INITIATION
+
     const tenantedModel: TenantedModel = {
       invoice: invoice,
       invoiceLine: invoiceLine,
       payment,
       paymentLine,
       _sequelizeConnection: sequelize,
+      _mongoConnection: mongo,
     };
 
     return tenantedModel;

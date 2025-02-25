@@ -4,7 +4,7 @@ import {
   getInvoice,
   getLinesByInvoiceId,
 } from "@/tenanted/service/invoice.service";
-import { IInvoice } from "@/tenanted/model/invoice";
+import { IInvoice } from "@/tenanted/model/pg/invoice";
 import { Op } from "sequelize";
 import { createInvoiceValidation } from "@/tenanted/validation/invoice.validation";
 
