@@ -66,8 +66,11 @@ export async function compileModel(dbName: string) {
 
     //MONGO MODEL INITIATION
     const balanceModel = mongo.model("Medici_Balance", balanceSchema);
+    await balanceModel.syncIndexes();
     const journalModel = mongo.model("Medici_Journal", journalSchema);
+    await journalModel.syncIndexes();
     const lockModel = mongo.model("Medici_Lock", lockSchema);
+    await lockModel.syncIndexes();
     transactionSchema.index({
       _journal: 1,
     });
@@ -87,6 +90,7 @@ export async function compileModel(dbName: string) {
       "Medici_Transaction",
       transactionSchema,
     );
+    await transactionModel.syncIndexes();
 
     const tenantedModel: TenantedModel = {
       invoice: invoice,
