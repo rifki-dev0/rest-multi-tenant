@@ -25,6 +25,11 @@ app.get("/", (req, res) => {
 
 //add sub route
 app.use(webhook);
-app.use(mainRouter);
+app.use("/api", mainRouter);
+
+//error handler
+app.use((req, res) => {
+  res.status(404).send(`API not found : ${req.url}`);
+});
 
 export default app;
